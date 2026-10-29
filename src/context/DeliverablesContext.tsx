@@ -17,14 +17,15 @@ interface DeliverablesContextType {
   closeCreateModal: () => void;
 }
 
-const STORAGE_KEY = 'paylock_deliverables_v1';
-const SETTINGS_KEY = 'paylock_creator_settings_v1';
+const STORAGE_KEY = 'paylock_deliverables_v2';
+const SETTINGS_KEY = 'paylock_creator_settings_v2';
 
 const DEFAULT_SETTINGS: CreatorSettings = {
   stripeAccountId: 'acct_1N48K2PayLockDemo',
   razorpayAccountId: '',
-  platformFeePercent: 3, // 3% Platform Fee, 97% to creator
+  platformFeePercent: 1, // 1% Platform Margin, 99% to creator
   currency: 'USD',
+  conversionRate: 1,
   businessName: 'Apex Creative Studio'
 };
 
@@ -43,8 +44,8 @@ const DEFAULT_DELIVERABLES: Deliverable[] = [
     fileSize: '842 MB',
     stripeAccountId: 'acct_1N48K2PayLockDemo',
     payoutSplit: {
-      platformFee: 45, // 3% of $1,500
-      creatorPayout: 1455, // 97% of $1,500
+      platformFee: 15, // 1% of $1,500 = $15 platform margin
+      creatorPayout: 1485, // 99% of $1,500 = $1,485 to creator
       destinationAccount: 'acct_1N48K2PayLockDemo'
     },
     notes: 'Final master export delivered with stereoscopic sound mixing and graded color palette.'
@@ -63,8 +64,8 @@ const DEFAULT_DELIVERABLES: Deliverable[] = [
     fileSize: '24.8 MB',
     stripeAccountId: 'acct_1N48K2PayLockDemo',
     payoutSplit: {
-      platformFee: 72, // 3% of $2,400
-      creatorPayout: 2328, // 97% of $2,400
+      platformFee: 24, // 1% of $2,400 = $24 platform margin
+      creatorPayout: 2376, // 99% of $2,400 = $2,376 to creator
       destinationAccount: 'acct_1N48K2PayLockDemo'
     },
     notes: 'Multi-page executive report with board-level financial projections and asset distribution models.'
@@ -84,8 +85,8 @@ const DEFAULT_DELIVERABLES: Deliverable[] = [
     paidAt: new Date(Date.now() - 86400000).toISOString(),
     stripeAccountId: 'acct_1N48K2PayLockDemo',
     payoutSplit: {
-      platformFee: 96,
-      creatorPayout: 3104,
+      platformFee: 32, // 1% of $3,200 = $32 platform margin
+      creatorPayout: 3168, // 99% of $3,200 = $3,168 to creator
       destinationAccount: 'acct_1N48K2PayLockDemo'
     },
     notes: 'Production build archive including source React components, GLTF models, and deployed preview.'

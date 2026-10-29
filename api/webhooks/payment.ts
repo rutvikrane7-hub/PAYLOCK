@@ -45,7 +45,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // Handle checkout completion
     if (eventType === 'checkout.session.completed' || eventType === 'payment_intent.succeeded') {
-      const platformFee = Math.round(amountTotal * 0.03 * 100) / 100;
+      const platformFee = Math.round(amountTotal * 0.01 * 100) / 100;
       const creatorPayout = Math.round((amountTotal - platformFee) * 100) / 100;
 
       const unlockPayload = {
@@ -58,11 +58,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         timestamp: new Date().toISOString(),
         paymentDetails: {
           totalAmount: amountTotal,
-          platformFee, // 3%
-          creatorPayout, // 97%
+          platformFee, // 1% platform fee margin
+          creatorPayout, // 99% creator direct payout
           creatorAccountId: stripeAccountId,
         },
-        message: `Payment verified. Deliverable ${deliverableId} unlocked. 97% ($${creatorPayout}) routed to creator ${stripeAccountId}, 3% ($${platformFee}) platform fee retained.`,
+        message: `Payment verified. Deliverable ${deliverableId} unlocked. 99% ($${creatorPayout}) routed to creator ${stripeAccountId}, 1% ($${platformFee}) platform fee retained.`,
       };
 
       return res.status(200).json(unlockPayload);

@@ -30,7 +30,8 @@ export interface Deliverable {
 export interface CreatorSettings {
   stripeAccountId: string;
   razorpayAccountId: string;
-  platformFeePercent: number; // default 3%
-  currency: string;
+  platformFeePercent: number; // default 1% platform margin
+  currency: string; // 'USD' or 'INR'
+  conversionRate: number; // conversion rate from USD to selected currency (e.g., 82 for INR)
   businessName: string;
 }

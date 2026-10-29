@@ -43,11 +43,11 @@ function paylockApiDevPlugin(): Plugin {
             deliverableId = 'demo',
             price = 1500,
             stripeAccountId = 'acct_1N48K2PayLockDemo',
-            platformFeePercent = 3,
+            platformFeePercent = 1,
           } = body;
 
           const totalAmount = Number(price);
-          const feeRate = (Number(platformFeePercent) || 3) / 100;
+          const feeRate = (Number(platformFeePercent) || 1) / 100;
           const platformFee = Math.round(totalAmount * feeRate * 100) / 100;
           const creatorPayout = Math.round((totalAmount - platformFee) * 100) / 100;
           const sessionId = 'cs_paylock_' + Math.random().toString(36).substring(2, 12);
@@ -59,14 +59,14 @@ function paylockApiDevPlugin(): Plugin {
             deliverableId,
             split: {
               totalAmount,
-              platformFee, // 3%
-              creatorPayout, // 97%
+              platformFee, // 1%
+              creatorPayout, // 99%
               destinationAccount: stripeAccountId,
               feePercentage: (feeRate * 100).toFixed(1) + '%',
               creatorPercentage: ((1 - feeRate) * 100).toFixed(1) + '%',
             },
             checkoutUrl: `/p/${deliverableId}?session_id=${sessionId}&success=true`,
-            message: `Stripe Connect Direct Charge generated. 97% ($${creatorPayout}) routed to creator ${stripeAccountId}, 3% ($${platformFee}) platform fee retained.`,
+            message: `Stripe Connect Direct Charge generated. 99% ($${creatorPayout}) routed to creator ${stripeAccountId}, 1% ($${platformFee}) platform fee retained.`,
           };
 
           res.setHeader('Content-Type', 'application/json');
@@ -78,7 +78,7 @@ function paylockApiDevPlugin(): Plugin {
         if (req.url === '/api/webhooks/payment' && req.method === 'POST') {
           const deliverableId = body?.data?.object?.metadata?.deliverableId || body?.deliverableId || 'demo';
           const totalAmount = Number(body?.totalAmount || 1500);
-          const platformFee = Math.round(totalAmount * 0.03 * 100) / 100;
+          const platformFee = Math.round(totalAmount * 0.01 * 100) / 100;
           const creatorPayout = Math.round((totalAmount - platformFee) * 100) / 100;
 
           const webhookResult = {
@@ -91,11 +91,11 @@ function paylockApiDevPlugin(): Plugin {
             timestamp: new Date().toISOString(),
             paymentDetails: {
               totalAmount,
-              platformFee,
-              creatorPayout,
+              platformFee, // 1%
+              creatorPayout, // 99%
               creatorAccountId: body?.stripeAccountId || 'acct_1N48K2PayLockDemo',
             },
-            message: `Webhook verified. Deliverable ${deliverableId} unlocked. 97% ($${creatorPayout}) routed to creator, 3% ($${platformFee}) platform fee.`,
+            message: `Webhook verified. Deliverable ${deliverableId} unlocked. 99% ($${creatorPayout}) routed to creator, 1% ($${platformFee}) platform fee.`,
           };
 
           res.setHeader('Content-Type', 'application/json');

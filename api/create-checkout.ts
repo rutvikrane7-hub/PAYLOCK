@@ -26,19 +26,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       clientName = 'Client',
       price = 1500,
       stripeAccountId = 'acct_1N48K2PayLockDemo',
-      platformFeePercent = 3, // 3% Platform Fee, 97% Creator
+      platformFeePercent = 1, // 1% Platform Fee Margin, 99% Creator
     } = req.body || {};
 
     const origin = req.headers.origin || 'http://localhost:5173';
     const totalAmountCents = Math.round(Number(price) * 100);
-    const feeRate = (Number(platformFeePercent) || 3) / 100;
+    const feeRate = (Number(platformFeePercent) || 1) / 100;
     const applicationFeeCents = Math.round(totalAmountCents * feeRate);
     const creatorPayoutCents = totalAmountCents - applicationFeeCents;
 
     const payoutSplit = {
       totalAmount: Number(price),
-      platformFee: applicationFeeCents / 100,
-      creatorPayout: creatorPayoutCents / 100,
+      platformFee: applicationFeeCents / 100, // 1%
+      creatorPayout: creatorPayoutCents / 100, // 99%
       destinationAccount: stripeAccountId,
       feePercentage: (feeRate * 100).toFixed(1) + '%',
       creatorPercentage: ((1 - feeRate) * 100).toFixed(1) + '%',
@@ -66,11 +66,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           },
         ],
         mode: 'payment',
-        // Stripe Connect Direct / Destination Charges split
+        // Stripe Connect Direct / Destination Charges split: 1% platform fee, 99% creator
         payment_intent_data: {
-          application_fee_amount: applicationFeeCents, // 3% to platform
+          application_fee_amount: applicationFeeCents, // 1% to platform
           transfer_data: {
-            destination: stripeAccountId, // 97% to creator
+            destination: stripeAccountId, // 99% to creator
           },
           metadata: {
             deliverableId,
@@ -106,7 +106,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       url: `${origin}/p/${deliverableId}?session_id=${mockSessionId}&success=true`,
       split: payoutSplit,
       mode: 'simulated_stripe_connect',
-      message: 'Checkout session created with Stripe Connect Direct Charges (3% platform fee, 97% creator destination payout).',
+      message: 'Checkout session created with Stripe Connect Direct Charges (1% platform fee, 99% creator destination payout).',
     });
   } catch (error: any) {
     console.error('Error creating checkout session:', error);
