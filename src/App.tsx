@@ -9,7 +9,7 @@ export function App() {
   return (
     <DeliverablesProvider>
       <BrowserRouter>
-        <div className="flex flex-col min-h-screen bg-[#070b14] text-slate-100 selection:bg-cyan-500 selection:text-black">
+        <div className="flex flex-col min-h-screen bg-[#f8f9fa] text-gray-900 selection:bg-blue-100 selection:text-blue-900 font-sans">
           {/* Top Navbar */}
           <Navbar />
 
